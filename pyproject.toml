@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aisast"
+version = "1.0.0"
+description = "AI-powered static application security testing that runs fully locally with Ollama"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = []            # standard library only; Ollama is reached over its local REST API
+keywords = ["sast", "security", "ollama", "llm", "static-analysis", "appsec"]
+classifiers = ["Programming Language :: Python :: 3", "Topic :: Security", "Environment :: Console"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+benchmark = ["semgrep>=1.80"]
+
+[project.scripts]
+aisast = "aisast.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["aisast*"]

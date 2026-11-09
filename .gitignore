@@ -1,0 +1,8 @@
+__pycache__/
+*.egg-info/
+.aisast/
+.pytest_cache/
+build/
+dist/
+demo/vulnerable-app/app/uploads/
+demo/vulnerable-app/app/acme.db
