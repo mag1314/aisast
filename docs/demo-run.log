@@ -1,0 +1,162 @@
+
+━━ 0. Prepare a fresh copy of the vulnerable app in /tmp/aisast-demo (git repo)
+functional tests: PASS on vulnerable code
+
+━━ 1. Environment check (Ollama + model)
+AI-SAST 1.0.0  · local, Ollama-powered static application security testing
+Python      : 3.13.18
+Ollama URL  : http://localhost:11434
+Ollama      : NOT reachable
+Models      : -
+Scan model  : qwen2.5-coder:7b — Cannot reach Ollama at http://localhost:11434: <urlopen error [Errno 111] Connection refused>. Start it with `ollama serve`.
+node        : /opt/node22/bin/node
+git         : /usr/bin/git
+→ Ollama not ready: the demo continues with the deterministic engine + fix templates.
+
+━━ 2. Scan: taint analysis + AI triage + AI deep scan
+AI-SAST 1.0.0  · local, Ollama-powered static application security testing
+[1/5] Static analysis: 12 files
+      37 findings from the deterministic engine in 0.039s
+[2/5] AI stages skipped (--no-ai)
+[4/5] Updating remediation tracking
+[5/5] Writing reports
+
+SEVERITY   RISK  ID           TITLE                              LOCATION
+CRITICAL    9.8  AIS-DC9F2BF7 SQL Injection                      app/db.py:36
+CRITICAL    9.8  AIS-9C7691DF SQL Injection                      app/main.py:83
+CRITICAL    9.8  AIS-86530E97 Server-Side Template Injection     app/main.py:124
+CRITICAL    9.8  AIS-0D15C4E1 Insecure Deserialization           app/main.py:177
+CRITICAL    9.8  AIS-26545CDA Insecure Deserialization           app/main.py:183
+CRITICAL    9.8  AIS-89DCB0A4 Code Injection                     app/main.py:196
+CRITICAL    9.8  AIS-D37A3883 OS Command Injection               app/main.py:210
+CRITICAL    9.8  AIS-BD712CD8 SQL Injection                      web/server.js:31
+CRITICAL    9.8  AIS-AF95D042 OS Command Injection               web/server.js:45
+CRITICAL    9.8  AIS-780F952A Code Injection                     web/server.js:77
+CRITICAL    9.8  AIS-6B91C037 Insecure Deserialization           web/server.js:97
+CRITICAL    9.0  AIS-6D850D01 Hardcoded Secret                   app/config.py:8
+HIGH        8.3  AIS-82003533 Cross-Site Scripting               app/main.py:112
+HIGH        8.3  AIS-F2FE1C2A Path Traversal                     app/main.py:131
+HIGH        8.3  AIS-FB37D807 Server-Side Request Forgery        app/main.py:143
+HIGH        8.3  AIS-C4E4C34E NoSQL Injection                    web/server.js:39
+HIGH        8.3  AIS-3B106588 Cross-Site Scripting               web/server.js:54
+HIGH        8.3  AIS-1EA71E90 Path Traversal                     web/server.js:62
+HIGH        8.3  AIS-D451FE1C Server-Side Request Forgery        web/server.js:72
+HIGH        8.0  AIS-96B512D2 Cross-Site Scripting               web/public/app.js:4
+HIGH        7.8  AIS-04C9F639 Weak Cryptographic Hash            web/server.js:22
+HIGH        7.5  AIS-03C5DFF8 Hardcoded Secret                   .env:1
+HIGH        7.5  AIS-0F7F1D0E Hardcoded Secret                   app/config.py:4
+HIGH        7.5  AIS-96BD5A70 Weak Cryptographic Hash            app/db.py:30
+HIGH        7.5  AIS-222E8A82 JWT Signature Not Verified         app/main.py:35
+HIGH        7.5  AIS-4D7C0E4F Hardcoded Secret                   web/server.js:18
+HIGH        7.2  AIS-B16FC4D2 Prototype Pollution                web/server.js:88
+HIGH        6.7  AIS-90C0AE7D JWT Signature Not Verified         web/server.js:102
+MEDIUM      5.8  AIS-FEC2E03D Open Redirect                      app/main.py:162
+MEDIUM      5.8  AIS-6B052C12 Open Redirect                      web/server.js:93
+MEDIUM      5.3  AIS-04ED853A Insecure Randomness                app/main.py:74
+MEDIUM      5.3  AIS-52C4C817 TLS Certificate Validation Disable app/main.py:156
+MEDIUM      5.3  AIS-050476E6 Insecure Randomness                web/server.js:82
+MEDIUM      5.0  AIS-056E7A5A Debug Mode Enabled                 app/main.py:263
+MEDIUM      5.0  AIS-63D7165C Insecure Randomness                app/utils.py:22
+MEDIUM      3.2  AIS-03CE43FD OS Command Injection               app/utils.py:34
+LOW         2.5  AIS-8AE96A7E Insecure Temporary File            app/utils.py:30
+
+Findings: 37  (critical: 12, high: 16, medium: 8, low: 1)
+Tracking: 37 new, 0 existing, 0 resolved since last scan
+
+  report: /tmp/aisast-demo/.aisast/reports/aisast-report.html
+  report: /tmp/aisast-demo/.aisast/reports/aisast-report.json
+  report: /tmp/aisast-demo/.aisast/reports/aisast-report.sarif
+  report: /tmp/aisast-demo/.aisast/reports/aisast-report.md
+
+Next: `aisast fix /tmp/aisast-demo` to generate validated patches.
+
+━━ 3. Ask the AI about the top finding
+AIS-DC9F2BF7 SQL Injection (CWE-89) — app/db.py:36
+Ollama unavailable: Cannot reach Ollama at http://localhost:11434: <urlopen error [Errno 111] Connection refused>. Start it with `ollama serve`.
+
+━━ 4. Remediate: AI patches → syntax → re-scan → AI review → tests → apply → git branch
+AI-SAST 1.0.0  · local, Ollama-powered static application security testing
+Generating fixes for 36 findings in 36 code regions (templates (offline))
+  ✔ [1/36] app/config.py:4-4 PY-HARDCODED-SECRET — validated (template, 1 attempt)
+  ✔ [2/36] app/config.py:8-8 SECRET-AWS-KEY — validated (template, 1 attempt)
+  · [3/36] app/db.py:29-30 PY-WEAK-HASH — unsupported
+  ✔ [4/36] app/db.py:33-37 PY-SQLI-TAINT — validated (template, 1 attempt)
+  ✔ [5/36] app/main.py:31-36 PY-JWT-NOVERIFY — validated (template, 1 attempt)
+  ✔ [6/36] app/main.py:71-76 PY-INSECURE-RANDOM — validated (template, 1 attempt)
+  ✔ [7/36] app/main.py:80-84 PY-SQLI-TAINT — validated (template, 1 attempt)
+  ✔ [8/36] app/main.py:109-112 PY-XSS-RESPONSE — validated (template, 1 attempt)
+  ✔ [9/36] app/main.py:121-124 PY-SSTI — validated (template, 1 attempt)
+  ✔ [10/36] app/main.py:128-131 PY-PATH-TRAVERSAL — validated (template, 1 attempt)
+  · [11/36] app/main.py:140-144 PY-SSRF — unsupported
+  ✔ [12/36] app/main.py:153-157 PY-TLS-VERIFY — validated (template, 1 attempt)
+  ✔ [13/36] app/main.py:160-162 PY-OPEN-REDIRECT — validated (template, 1 attempt)
+  ✔ [14/36] app/main.py:174-178 PY-DESER-PICKLE — validated (template, 1 attempt)
+  ✔ [15/36] app/main.py:181-184 PY-DESER-YAML — validated (template, 1 attempt)
+  ✔ [16/36] app/main.py:193-197 PY-CODE-EVAL — validated (template, 1 attempt)
+  ✔ [17/36] app/main.py:206-211 PY-CMDI-TAINT — validated (template, 1 attempt)
+  ✔ [18/36] app/main.py:263-263 PY-FLASK-DEBUG — validated (template, 1 attempt)
+  ✔ [19/36] app/utils.py:21-22 PY-INSECURE-RANDOM — validated (template, 1 attempt)
+  ✔ [20/36] app/utils.py:29-30 PY-TEMPFILE — validated (template, 1 attempt)
+  ✔ [21/36] app/utils.py:33-34 PY-CMDI-SHELL — validated (template, 1 attempt)
+  ✔ [22/36] web/public/app.js:2-5 JS-DOM-XSS — validated (template, 1 attempt)
+  ✔ [23/36] web/server.js:15-18 JS-HARDCODED-SECRET — validated (template, 1 attempt)
+  · [24/36] web/server.js:21-23 JS-WEAK-HASH — unsupported
+  ✔ [25/36] web/server.js:29-32 JS-SQLI — validated (template, 1 attempt)
+  ✔ [26/36] web/server.js:38-42 JS-NOSQLI — validated (template, 1 attempt)
+  ✔ [27/36] web/server.js:44-46 JS-CMDI — validated (template, 1 attempt)
+  ✔ [28/36] web/server.js:52-55 JS-XSS — validated (template, 1 attempt)
+  ✔ [29/36] web/server.js:61-63 JS-PATH-TRAVERSAL — validated (template, 1 attempt)
+  · [30/36] web/server.js:70-74 JS-SSRF — unsupported
+  · [31/36] web/server.js:76-79 JS-CODE-EVAL — unsupported
+  ✔ [32/36] web/server.js:81-85 JS-INSECURE-RANDOM — validated (template, 1 attempt)
+  ✔ [33/36] web/server.js:87-90 JS-PROTO-POLLUTION — validated (template, 1 attempt)
+  ✔ [34/36] web/server.js:92-94 JS-OPEN-REDIRECT — validated (template, 1 attempt)
+  ✔ [35/36] web/server.js:96-99 JS-DESER — validated (template, 1 attempt)
+  ✔ [36/36] web/server.js:101-104 JS-JWT-NOVERIFY — validated (template, 1 attempt)
+Running tests with all patches applied: python3 -m pytest -q tests -p no:cacheprovider
+  tests failed — isolating the offending patch(es)
+  ✘ dropped AIS-89DCB0A4 (app/main.py:193) — tests fail with this patch
+  tests passed
+Applied patches to 6 files
+Committed 6dad608 on branch aisast/fix-20261109-123527
+
+Validated fixes: 30/36 findings
+  combined patch : /tmp/aisast-demo/.aisast/fixes/aisast-fixes.patch
+  per-fix patches: /tmp/aisast-demo/.aisast/fixes/patches
+  PR description : /tmp/aisast-demo/.aisast/fixes/PR_DESCRIPTION.md
+  report         : /tmp/aisast-demo/.aisast/reports/aisast-report.html
+  applied to     : 6 files
+  git branch     : aisast/fix-20261109-123527 (6dad608) → git push -u origin aisast/fix-20261109-123527
+
+━━ 5. Validate: functional tests on the fixed code
+10 passed, 1 warning in 0.30s
+
+━━ 6. Verify: re-scan marks fixed findings as verified
+  ✔ AIS-63D7165C verified fixed
+  ✔ AIS-03CE43FD verified fixed
+  ✔ AIS-8AE96A7E verified fixed
+Verified fixed: 30   still open: 7   reopened: 0
+
+━━ 7. Remediation status
+open: 7  fix_proposed: 0  fixed: 0  verified: 30  reopened: 0  false_positive: 0  accepted_risk: 0
+
+AIS-89DCB0A4 open            critical  Code Injection                       app/main.py:201
+AIS-780F952A open            critical  Code Injection                       web/server.js:78
+AIS-FB37D807 open            high      Server-Side Request Forgery          app/main.py:145
+AIS-D451FE1C open            high      Server-Side Request Forgery          web/server.js:73
+AIS-04C9F639 open            high      Weak Cryptographic Hash              web/server.js:23
+AIS-03C5DFF8 open            high      Hardcoded Secret                     .env:1
+AIS-96BD5A70 open            high      Weak Cryptographic Hash              app/db.py:30
+AIS-DC9F2BF7 verified        critical  SQL Injection                        app/db.py:36
+AIS-9C7691DF verified        critical  SQL Injection                        app/main.py:83
+AIS-86530E97 verified        critical  Server-Side Template Injection       app/main.py:124
+
+━━ 8. Results
+6dad608 fix(security): remediate 30 findings with AI-SAST
+0980bcb AcmeShop (vulnerable)
+
+HTML report      : /tmp/aisast-demo/.aisast/reports/aisast-report.html
+SARIF            : /tmp/aisast-demo/.aisast/reports/aisast-report.sarif
+Combined patch   : /tmp/aisast-demo/.aisast/fixes/aisast-fixes.patch
+PR description   : /tmp/aisast-demo/.aisast/fixes/PR_DESCRIPTION.md
+Branch to push   : aisast/fix-20261109-123527
