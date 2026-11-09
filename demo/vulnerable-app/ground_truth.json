@@ -1,0 +1,581 @@
+{
+ "description": "Labels for the AcmeShop demo corpus. Each entry is located by an 'anchor' (a unique substring of the line) so labels survive edits. 'vulnerable': false entries are intentionally safe look-alikes used to measure false positives. 'ai_only' marks flaws that need semantic reasoning (no taint/pattern signature). 'interprocedural' marks flows that cross a function/file boundary. 'counted': false marks informational items that neither reward nor penalize a tool.",
+ "categories_compatible": [
+  [
+   "idor",
+   "missing-auth"
+  ],
+  [
+   "ssti",
+   "xss"
+  ],
+  [
+   "sqli",
+   "nosqli"
+  ],
+  [
+   "logic",
+   "other"
+  ],
+  [
+   "code-injection",
+   "ssti"
+  ]
+ ],
+ "entries": [
+  {
+   "id": "V01",
+   "file": "app/main.py",
+   "anchor": "options={\"verify_signature\": False}",
+   "category": "jwt",
+   "vulnerable": true
+  },
+  {
+   "id": "V02",
+   "file": "app/db.py",
+   "anchor": "row = c.execute(query).fetchone()",
+   "also": [
+    [
+     "app/db.py",
+     "query = \"SELECT id, username"
+    ],
+    [
+     "app/main.py",
+     "user = db.find_user(username)"
+    ]
+   ],
+   "category": "sqli",
+   "vulnerable": true,
+   "interprocedural": true
+  },
+  {
+   "id": "V03",
+   "file": "app/main.py",
+   "anchor": "reset_token = \"\".join(random.choice",
+   "category": "insecure-random",
+   "vulnerable": true
+  },
+  {
+   "id": "V04",
+   "file": "app/main.py",
+   "anchor": "WHERE name LIKE '%{q}%'",
+   "category": "sqli",
+   "vulnerable": true
+  },
+  {
+   "id": "V05",
+   "file": "app/main.py",
+   "anchor": "return f\"<h1>Welcome back, {name}!</h1>\"",
+   "category": "xss",
+   "vulnerable": true
+  },
+  {
+   "id": "V06",
+   "file": "app/main.py",
+   "anchor": "return render_template_string(\"<h1>\" + title",
+   "category": "ssti",
+   "vulnerable": true
+  },
+  {
+   "id": "V07",
+   "file": "app/main.py",
+   "anchor": "return send_file(os.path.join(UPLOAD_DIR, filename))",
+   "category": "path-traversal",
+   "vulnerable": true
+  },
+  {
+   "id": "V08",
+   "file": "app/main.py",
+   "anchor": "resp = requests.get(url, timeout=5)",
+   "category": "ssrf",
+   "vulnerable": true
+  },
+  {
+   "id": "V09",
+   "file": "app/main.py",
+   "anchor": "timeout=5, verify=False)",
+   "category": "tls",
+   "vulnerable": true
+  },
+  {
+   "id": "V10",
+   "file": "app/main.py",
+   "anchor": "return redirect(request.args.get(\"next\", \"/\"))",
+   "category": "open-redirect",
+   "vulnerable": true
+  },
+  {
+   "id": "V11",
+   "file": "app/main.py",
+   "anchor": "cart = pickle.loads(raw)",
+   "category": "deserialization",
+   "vulnerable": true
+  },
+  {
+   "id": "V12",
+   "file": "app/main.py",
+   "anchor": "settings = yaml.load(request.data, Loader=yaml.Loader)",
+   "category": "deserialization",
+   "vulnerable": true
+  },
+  {
+   "id": "V13",
+   "file": "app/main.py",
+   "anchor": "result = eval(expression)",
+   "category": "code-injection",
+   "vulnerable": true
+  },
+  {
+   "id": "V14",
+   "file": "app/main.py",
+   "anchor": "output = os.popen(\"ping -c 1 \" + host).read()",
+   "category": "cmdi",
+   "vulnerable": true
+  },
+  {
+   "id": "V15",
+   "file": "app/main.py",
+   "anchor": "order = db.get_order(order_id)",
+   "also": [
+    [
+     "app/main.py",
+     "def get_order(order_id):"
+    ],
+    [
+     "app/main.py",
+     "@app.route(\"/orders/<int:order_id>\")"
+    ]
+   ],
+   "category": "idor",
+   "vulnerable": true,
+   "ai_only": true
+  },
+  {
+   "id": "V16",
+   "file": "app/main.py",
+   "anchor": "def delete_user(user_id):",
+   "also": [
+    [
+     "app/main.py",
+     "@app.route(\"/admin/users/<int:user_id>\""
+    ],
+    [
+     "app/main.py",
+     "db.delete_user(user_id)"
+    ]
+   ],
+   "category": "missing-auth",
+   "vulnerable": true,
+   "ai_only": true
+  },
+  {
+   "id": "V17",
+   "file": "app/main.py",
+   "anchor": "user.update(request.get_json())",
+   "also": [
+    [
+     "app/main.py",
+     "db.save_user(user)"
+    ]
+   ],
+   "category": "mass-assignment",
+   "vulnerable": true,
+   "ai_only": true
+  },
+  {
+   "id": "V18",
+   "file": "app/main.py",
+   "anchor": "amount = float(request.form[\"amount\"])",
+   "also": [
+    [
+     "app/main.py",
+     "db.move_funds(g.user[\"id\"], to_user, amount)"
+    ]
+   ],
+   "category": "logic",
+   "vulnerable": true,
+   "ai_only": true
+  },
+  {
+   "id": "V19",
+   "file": "app/main.py",
+   "anchor": "app.run(host=\"0.0.0.0\", port=5000, debug=True)",
+   "category": "debug",
+   "vulnerable": true
+  },
+  {
+   "id": "V20",
+   "file": "app/db.py",
+   "anchor": "return hashlib.md5(password.encode()).hexdigest()",
+   "category": "weak-crypto",
+   "vulnerable": true
+  },
+  {
+   "id": "V21",
+   "file": "app/config.py",
+   "anchor": "SECRET_KEY = \"Acme-Pr0d",
+   "category": "secrets",
+   "vulnerable": true
+  },
+  {
+   "id": "V22",
+   "file": "app/config.py",
+   "anchor": "AWS_ACCESS_KEY_ID = \"AKIA",
+   "category": "secrets",
+   "vulnerable": true
+  },
+  {
+   "id": "V23",
+   "file": "app/config.py",
+   "anchor": "JWT_SECRET = os.environ.get(\"JWT_SECRET\", \"dev\")",
+   "category": "secrets",
+   "vulnerable": true
+  },
+  {
+   "id": "V24",
+   "file": "app/utils.py",
+   "anchor": "return str(random.randint(100000, 999999))",
+   "category": "insecure-random",
+   "vulnerable": true
+  },
+  {
+   "id": "V25",
+   "file": "app/utils.py",
+   "anchor": "return tempfile.mktemp(suffix=\".csv\")",
+   "category": "insecure-temp",
+   "vulnerable": true
+  },
+  {
+   "id": "V26",
+   "file": "app/utils.py",
+   "anchor": "--name {report_name}\", shell=True",
+   "category": "cmdi",
+   "vulnerable": true
+  },
+  {
+   "id": "V27",
+   "file": ".env",
+   "anchor": "DB_PASSWORD=",
+   "category": "secrets",
+   "vulnerable": true
+  },
+  {
+   "id": "V28",
+   "file": "web/server.js",
+   "anchor": "const JWT_SECRET = \"acme-jwt",
+   "category": "secrets",
+   "vulnerable": true,
+   "also": [
+    [
+     "web/server.js",
+     "res.json({ token: jwt.sign({ uid: user.id }, JWT_SECRET) });"
+    ]
+   ]
+  },
+  {
+   "id": "V29",
+   "file": "web/server.js",
+   "anchor": "return crypto.createHash(\"md5\").update(password)",
+   "category": "weak-crypto",
+   "vulnerable": true
+  },
+  {
+   "id": "V30",
+   "file": "web/server.js",
+   "anchor": "WHERE name = '\" + name + \"'\"",
+   "category": "sqli",
+   "vulnerable": true
+  },
+  {
+   "id": "V31",
+   "file": "web/server.js",
+   "anchor": "User.findOne({ username: req.body.username",
+   "category": "nosqli",
+   "vulnerable": true
+  },
+  {
+   "id": "V32",
+   "file": "web/server.js",
+   "anchor": "exec(\"convert \" + req.body.file",
+   "category": "cmdi",
+   "vulnerable": true
+  },
+  {
+   "id": "V33",
+   "file": "web/server.js",
+   "anchor": "res.send(`<h2>Results for ${term}</h2>`)",
+   "category": "xss",
+   "vulnerable": true
+  },
+  {
+   "id": "V34",
+   "file": "web/server.js",
+   "anchor": "fs.readFile(path.join(__dirname, \"files\", req.query.name)",
+   "category": "path-traversal",
+   "vulnerable": true
+  },
+  {
+   "id": "V35",
+   "file": "web/server.js",
+   "anchor": "const r = await axios.get(target);",
+   "category": "ssrf",
+   "vulnerable": true
+  },
+  {
+   "id": "V36",
+   "file": "web/server.js",
+   "anchor": "const result = eval(req.body.formula);",
+   "category": "code-injection",
+   "vulnerable": true
+  },
+  {
+   "id": "V37",
+   "file": "web/server.js",
+   "anchor": "const sessionToken = Math.random()",
+   "category": "insecure-random",
+   "vulnerable": true
+  },
+  {
+   "id": "V38",
+   "file": "web/server.js",
+   "anchor": "_.merge(settings, req.body);",
+   "category": "prototype-pollution",
+   "vulnerable": true
+  },
+  {
+   "id": "V39",
+   "file": "web/server.js",
+   "anchor": "res.redirect(req.query.to);",
+   "category": "open-redirect",
+   "vulnerable": true
+  },
+  {
+   "id": "V40",
+   "file": "web/server.js",
+   "anchor": "serialize.unserialize(",
+   "category": "deserialization",
+   "vulnerable": true
+  },
+  {
+   "id": "V41",
+   "file": "web/server.js",
+   "anchor": "const claims = jwt.decode(req.headers.authorization);",
+   "category": "jwt",
+   "vulnerable": true
+  },
+  {
+   "id": "V42",
+   "file": "web/server.js",
+   "anchor": "const order = await Order.findById(req.params.id);",
+   "also": [
+    [
+     "web/server.js",
+     "app.get(\"/api/orders/:id\""
+    ]
+   ],
+   "category": "idor",
+   "vulnerable": true,
+   "ai_only": true
+  },
+  {
+   "id": "V43",
+   "file": "web/server.js",
+   "anchor": "res.cookie(\"sid\", sessionToken);",
+   "category": "cookie",
+   "vulnerable": true
+  },
+  {
+   "id": "V44",
+   "file": "web/public/app.js",
+   "anchor": "document.getElementById(\"banner\").innerHTML = msg;",
+   "category": "xss",
+   "vulnerable": true
+  },
+  {
+   "id": "S01",
+   "file": "app/main.py",
+   "anchor": "FROM {db.PRODUCTS_TABLE} WHERE id = ?",
+   "category": "sqli",
+   "vulnerable": false
+  },
+  {
+   "id": "S02",
+   "file": "app/main.py",
+   "anchor": "FROM products WHERE id IN ({placeholders})",
+   "category": "sqli",
+   "vulnerable": false
+  },
+  {
+   "id": "S03",
+   "file": "app/main.py",
+   "anchor": "FROM products ORDER BY {column}",
+   "category": "sqli",
+   "vulnerable": false
+  },
+  {
+   "id": "S04",
+   "file": "app/main.py",
+   "anchor": "return f\"<p>Hi {escape(name)}</p>\"",
+   "category": "xss",
+   "vulnerable": false
+  },
+  {
+   "id": "S05",
+   "file": "app/main.py",
+   "anchor": "return send_file(os.path.join(UPLOAD_DIR, name))",
+   "category": "path-traversal",
+   "vulnerable": false
+  },
+  {
+   "id": "S06",
+   "file": "app/main.py",
+   "anchor": "resp = requests.get(f\"https://{PARTNER_HOST}/v1/stock\"",
+   "category": "ssrf",
+   "vulnerable": false
+  },
+  {
+   "id": "S07",
+   "file": "app/main.py",
+   "anchor": "return redirect(next_url)",
+   "category": "open-redirect",
+   "vulnerable": false
+  },
+  {
+   "id": "S08",
+   "file": "app/main.py",
+   "anchor": "settings = yaml.safe_load(request.data)",
+   "category": "deserialization",
+   "vulnerable": false
+  },
+  {
+   "id": "S09",
+   "file": "app/main.py",
+   "anchor": "value = ast.literal_eval(",
+   "category": "code-injection",
+   "vulnerable": false
+  },
+  {
+   "id": "S10",
+   "file": "app/main.py",
+   "anchor": "out = subprocess.run([\"uptime\"]",
+   "category": "cmdi",
+   "vulnerable": false
+  },
+  {
+   "id": "S11",
+   "file": "app/utils.py",
+   "anchor": "hashlib.md5(path.encode(), usedforsecurity=False)",
+   "category": "weak-crypto",
+   "vulnerable": false
+  },
+  {
+   "id": "S12",
+   "file": "app/utils.py",
+   "anchor": "return random.sample(products",
+   "category": "insecure-random",
+   "vulnerable": false
+  },
+  {
+   "id": "S13",
+   "file": "app/utils.py",
+   "anchor": "return secrets.token_urlsafe(32)",
+   "category": "insecure-random",
+   "vulnerable": false
+  },
+  {
+   "id": "S14",
+   "file": "app/utils.py",
+   "anchor": "subprocess.run([\"tar\", \"czf\"",
+   "category": "cmdi",
+   "vulnerable": false
+  },
+  {
+   "id": "S15",
+   "file": "app/config.py",
+   "anchor": "PASSWORD_FIELD = \"password\"",
+   "category": "secrets",
+   "vulnerable": false
+  },
+  {
+   "id": "S16",
+   "file": ".env",
+   "anchor": "STRIPE_API_KEY=your-stripe-key-here",
+   "category": "secrets",
+   "vulnerable": false
+  },
+  {
+   "id": "S17",
+   "file": "app/db.py",
+   "anchor": "c.executescript(SCHEMA)",
+   "category": "sqli",
+   "vulnerable": false
+  },
+  {
+   "id": "S18",
+   "file": "web/server.js",
+   "anchor": "WHERE id = ?\", [req.params.id]",
+   "category": "sqli",
+   "vulnerable": false
+  },
+  {
+   "id": "S19",
+   "file": "web/server.js",
+   "anchor": "execFile(\"convert\", [path.basename(req.body.file)",
+   "category": "cmdi",
+   "vulnerable": false
+  },
+  {
+   "id": "S20",
+   "file": "web/server.js",
+   "anchor": "res.json({ term: req.query.term });",
+   "category": "xss",
+   "vulnerable": false
+  },
+  {
+   "id": "S21",
+   "file": "web/server.js",
+   "anchor": "fs.readFile(path.join(__dirname, \"files\", name)",
+   "category": "path-traversal",
+   "vulnerable": false
+  },
+  {
+   "id": "S22",
+   "file": "web/server.js",
+   "anchor": "return crypto.createHash(\"sha1\").update(buffer)",
+   "category": "weak-crypto",
+   "vulnerable": false
+  },
+  {
+   "id": "S23",
+   "file": "web/server.js",
+   "anchor": "fs.readFileSync(path.join(__dirname, \"assets\", \"logo.png\"))",
+   "category": "path-traversal",
+   "vulnerable": false
+  },
+  {
+   "id": "S24",
+   "file": "web/public/app.js",
+   "anchor": "document.getElementById(\"banner\").textContent = msg;",
+   "category": "xss",
+   "vulnerable": false
+  },
+  {
+   "id": "I01",
+   "file": "app/main.py",
+   "anchor": "app.run(host=\"0.0.0.0\"",
+   "category": "other",
+   "vulnerable": true,
+   "counted": false,
+   "note": "binding to all interfaces: informational"
+  },
+  {
+   "id": "I02",
+   "file": "web/server.js",
+   "anchor": "app.use(express.json());",
+   "category": "csrf",
+   "vulnerable": true,
+   "counted": false,
+   "note": "no CSRF middleware: informational (API uses bearer tokens)"
+  }
+ ]
+}

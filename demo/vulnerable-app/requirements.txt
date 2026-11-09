@@ -1,0 +1,6 @@
+flask>=3.0
+pyyaml>=6.0
+requests>=2.31
+pyjwt>=2.8
+markupsafe>=2.1
+pytest>=7
